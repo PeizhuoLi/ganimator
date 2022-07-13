@@ -26,7 +26,7 @@ Or you may install the following packages (and their dependencies) manually:
 
 ## Quick Start
 
-We provide several pretrained models for various characters. Download and extract the pretrained model from [Google Drive](https://drive.google.com/file/d/1jFevozHEuSL2R0MP_ZVBqIAa4jFM0VRh/view?usp=sharing).
+We provide several pretrained models for various characters. Download and extract the pretrained model from [Google Drive](https://drive.google.com/file/d/1pfX5Okl6vbk7_oDCRsQjtljvRRs22uOZ/view?usp=sharing).
 
 ### Novel motion synthesis
 
