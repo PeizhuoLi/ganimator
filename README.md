@@ -32,9 +32,21 @@ We provide several pretrained models for various characters. Download and extrac
 
 Run `demo.sh`. The result for Salsa and Crab Dace will be saved in `./results/pre-trained/{name}/bvh`. The result after foot contact fix will be saved as `result_fixed.bvh`
 
-### Applications and Evaluation
+### Applications
 
 Under development.
+
+### Evaluation
+
+A separate module for evaluation is *required*. Before start with evaluation, please refer to the instruction of installation [here](https://github.com/PeizhuoLi/ganimator-eval-kernel).
+
+Use the following command to evaluate a trained model:
+
+~~~bash
+python evaluate.py --save_path={path to trained model}
+~~~
+
+Particularly, `python evaluate.py --save_path=./pre-trained/gangnam-style` yields the quantitative result reported in Table 1 and 2 of the paper.
 
 ## Train from scratch
 
