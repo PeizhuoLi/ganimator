@@ -26,15 +26,12 @@ Or you may install the following packages (and their dependencies) manually:
 
 ## Quick Start
 
-We provide several pretrained models for various characters. Download and extract the pretrained model from [Google Drive](https://drive.google.com/file/d/1pfX5Okl6vbk7_oDCRsQjtljvRRs22uOZ/view?usp=sharing).
+We provide several pretrained models for various characters. Download and extract the pretrained model from [Google Drive](https://drive.google.com/file/d/1NtTjchzExdXEzWFgTiu7OEw2O8srQSM7/view?usp=sharing).
 
 ### Novel motion synthesis
 
 Run `demo.sh`. The result for Salsa and Crab Dace will be saved in `./results/pre-trained/{name}/bvh`. The result after foot contact fix will be saved as `result_fixed.bvh`
 
-### Applications
-
-Under development.
 
 ### Evaluation
 
@@ -64,6 +61,56 @@ You may specify training device by `--device=cuda:0` using pytorch's device conv
 
 
 For customized bvh file, specify the joint names that should be involved during the generation and the contact name in `./bvh/skeleton_databse.py`, and set corresponding `bvh_prefix` and `bvh_name` parameter for `train.py`.
+
+## Applications
+
+### Motion Mixing
+
+When trained with two or more sequences, our framework generates a mixed motion of the input animations.
+
+This is an example for training on multiple sequences using `--multiple_sequence=1`:
+
+~~~bash
+python --bvh_prefix=./data/Elephant --bvh_name=list.txt --save_path={save_path} --multiple_sequence=1
+~~~
+
+The `list.txt` in `./data/Elephant` contains the names of the sequences to be trained.
+
+We also provide a pre-trained model for the motion mixing of the elephant motions:
+
+
+~~~bash
+python demo.py --save_path=./pre-trained/elephant
+~~~
+
+### Key-frame Editing
+
+Instead of generating the motion from random noise, we can perform key-frame editing by providing the edited key-frames in the coarsest level.
+
+This is an example for keyframe editing:
+
+~~~bash
+python demo.py --save_path=./pre-trained/baseball-milling --keyframe_editing=./data/Joe/Baseball-Milling-Idle-edited-keyframes.bvh
+~~~
+
+The `--keyframe_editing` parameter points to the bvh file containing the edited key-frames, which should be as the same temporal resolution as the coarsest level. Note that in this specific example, the `--ratio` parameter for the model is set to `1/30`, leading to a sparser key-frame setting that makes editing easier.
+
+
+### Style Transfer
+
+Similarly, when the model is trained on *style* input and the coarsest level is given by the *content* input, our model can achieve style transfer.
+
+This is an example for style transfer:
+
+~~~bash
+python demo.py --save_path=./pre-trained/proud-walk --style_transfer=./data/Xia/normal.bvh
+~~~
+
+Note the content of *content* input is required to be similar to the content of *style* input, in order to generate high-quality results as discussed in the paper.
+
+### Conditional Generation
+
+Under development...
 
 
 ## Acknowledgements

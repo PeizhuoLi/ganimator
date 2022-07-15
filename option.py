@@ -115,3 +115,5 @@ class TestOptionParser(OptionParser):
     def __init__(self):
         super(TestOptionParser, self).__init__()
         self.parser.add_argument('--target_length', type=int, default=600)
+        self.parser.add_argument('--style_transfer', type=str, default='')
+        self.parser.add_argument('--keyframe_editing', type=str, default='')

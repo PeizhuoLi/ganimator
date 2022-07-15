@@ -125,8 +125,30 @@ def main():
             rec_loss = torch.nn.MSELoss()(imgs[-1], real).detach().cpu().numpy()
             print(f'rec_loss: {rec_loss.item():.07f}')
 
-    target_len = test_args.target_length
-    target_length = get_pyramid_lengths(args, target_len)
+    generation_mode = 'manip' if test_args.style_transfer or test_args.keyframe_editing else 'random'
+
+    if test_args.style_transfer:
+        manip_data = MotionData(f'{test_args.style_transfer}',
+                                padding=args.skeleton_aware, use_velo=args.use_velo, repr=args.repr,
+                                contact=args.contact, keep_y_pos=args.keep_y_pos,
+                                no_scale=False)
+        target_len = len(manip_data)
+        target_length = get_pyramid_lengths(args, target_len)
+        conds = manip_data.sample(target_length[0], mode='nearest')
+    elif test_args.keyframe_editing:
+        manip_data = MotionData(f'{test_args.keyframe_editing}',
+                                padding=args.skeleton_aware, use_velo=args.use_velo, repr=args.repr,
+                                contact=args.contact, keep_y_pos=args.keep_y_pos,
+                                no_scale=True)
+        target_len = len(multiple_data[0])                       # Use original length of training data
+        target_length = get_pyramid_lengths(args, target_len)
+        conds = manip_data.sample(target_length[0])
+    else:
+        target_len = test_args.target_length
+        target_length = get_pyramid_lengths(args, target_len)
+        manip_data = None
+        conds = None
+
     while len(target_length) > n_total_levels:
         target_length = target_length[1:]
     z_length = target_length[0]
@@ -137,10 +159,13 @@ def main():
     amps2 = amps[base_id].clone()
     amps2[1:] = 0
 
-    imgs = draw_example(gens, 'random', z_stars[base_id], target_length, amps2, 1, args, all_img=True,
-                        conds=None, full_noise=args.full_noise, given_noise=[z_target])
+    imgs = draw_example(gens, generation_mode, z_stars[base_id], target_length, amps2, 1, args, all_img=True,
+                        conds=conds, full_noise=args.full_noise, given_noise=[z_target])
     motion_data.write(pjoin(save_path, f'result.bvh'), imgs[-1])
     fix_contact_on_file(save_path, name=f'result')
+
+    if manip_data is not None:
+        motion_data.write(pjoin(save_path, 'manipulate_input.bvh'), manip_data.sample())
 
 
 if __name__ == '__main__':
