@@ -112,6 +112,9 @@ class BVH_file:
         # Scale by 1/100 if it's raw exported bvh from blender
         if not no_scale and self.skeleton.offsets[0, 1] > 10:
             self.scale(1. / 100)
+        # Scale by 0.14 for Xia's dataset
+        if not no_scale and self.skeleton.skeleton_type == 3:
+            self.scale(0.14)
 
         self.requires_contact = requires_contact
 
