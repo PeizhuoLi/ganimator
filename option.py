@@ -31,7 +31,6 @@ class OptionParser:
         self.parser.add_argument('--nearest_interpolation', type=int, default=0)
         self.parser.add_argument('--layered_generator', type=int, default=0)
         self.parser.add_argument('--layered_full_receptive', type=int, default=0)
-        self.parser.add_argument('--layered_discriminator', type=int, default=0)
         self.parser.add_argument('--layer_mode', type=str, default='locrot')
         self.parser.add_argument('--full_noise', type=int, default=0)
         self.parser.add_argument('--num_layered_generator', type=int, default=1)

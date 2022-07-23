@@ -42,7 +42,7 @@ class Conv1dModel(nn.Module):
             self.layers.append(nn.Sequential(*seq))
         self.output = None
 
-    def forward(self, input, prev_img=None, cond=None, cond_requires_mask=False, prev_low_res=None):
+    def forward(self, input, prev_img=None, cond=None, cond_requires_mask=False):
         if cond is not None:
             layer_mask = get_layered_mask('locrot', 6)
             if cond_requires_mask:
@@ -200,7 +200,7 @@ class LayeredGenerator(LayeredModel):
         super(LayeredGenerator, self).__init__(args, layered, regular, n_rot)
         self.default_requires_mask = default_requires_mask
 
-    def forward(self, input, prev_img, cond=None, cond_requires_mask=None, prev_low_res=None):
+    def forward(self, input, prev_img, cond=None, cond_requires_mask=None):
         """
         :param input: random noise + prev_img
         :param prev_img: upsampled image from previous layer (blurred)
@@ -228,14 +228,3 @@ class LayeredGenerator(LayeredModel):
         self.res_regular[:, self.layer_mask] = self.res_layered
         self.output = self.regular.output
         return self.res_regular
-
-
-class LayeredDiscriminator(LayeredModel):
-    def __init__(self, args, layered: Conv1dModel, regular: Conv1dModel, n_rot=None):
-        super(LayeredDiscriminator, self).__init__(args, layered, regular, n_rot)
-
-    def forward(self, res):
-        self.res_layered = self.layered.forward(res[:, self.layer_mask])
-        self.res_regular = self.regular.forward(res)
-        res = torch.cat([self.res_regular, self.res_layered], dim=1)
-        return res

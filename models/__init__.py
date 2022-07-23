@@ -1,4 +1,4 @@
-from models.gan1d import GAN_model, Conv1dModel, LayeredGenerator, LayeredDiscriminator
+from models.gan1d import GAN_model, Conv1dModel, LayeredGenerator
 import torch.nn as nn
 from models.utils import get_layered_mask
 
@@ -70,14 +70,6 @@ def create_layered_model(args, dataset, evaluation=False, channels_list=None):
         disc = Conv1dModel(channels_list_regular[:-1] + [1, ], args.kernel_size, last_active=None,
                            padding_mode=args.padding_mode, batch_norm=args.batch_norm,
                            neighbour_list=neighbour_list, skeleton_aware=args.skeleton_aware).to(args.device)
-
-        if args.layered_discriminator:
-            disc_layered = Conv1dModel(channels_list_layered[:-1] + [1, ], args.kernel_size, last_active=None,
-                                       padding_mode=args.padding_mode, batch_norm=args.batch_norm,
-                                       neighbour_list=None,
-                                       skeleton_aware=False).to(args.device)
-
-            disc = LayeredDiscriminator(args, disc_layered, disc, dataset.n_rot)
 
         gan_model = GAN_model(layered_gen, disc, args, dataset)
         return layered_gen, disc, gan_model
