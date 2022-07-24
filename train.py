@@ -107,7 +107,7 @@ def main():
         curr_stage = last_stage + len(group)
         group_gan_models = [gans[i] for i in group]
         joint_train(reals, gens[:curr_stage], group_gan_models, lengths,
-                    z_star, amps, args, loss_recorder, gt_deltas, ConGen)
+                    z_star, amps, args, loss_recorder, ConGen)
 
         for i, gan_model in enumerate(group_gan_models):
             torch.save(gan_model.gen.state_dict(), pjoin(args.save_path, f'gen{group[i]:03d}.pt'))

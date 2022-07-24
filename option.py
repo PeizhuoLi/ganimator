@@ -38,7 +38,6 @@ class OptionParser:
         self.parser.add_argument('--path_to_existing', type=str, default='')
         self.parser.add_argument('--num_stages_limit', type=int, default=-1)
         self.parser.add_argument('--group_size', type=int, default=2)
-        self.parser.add_argument('--new_layered', type=int, default=0)
         self.parser.add_argument('--multiple_sequences', type=int, default=0)
         self.parser.add_argument('--joint_reduction', type=int, default=1)
         self.parser.add_argument('--use_factor_channel_list', type=int, default=0)
@@ -116,3 +115,4 @@ class TestOptionParser(OptionParser):
         self.parser.add_argument('--target_length', type=int, default=600)
         self.parser.add_argument('--style_transfer', type=str, default='')
         self.parser.add_argument('--keyframe_editing', type=str, default='')
+        self.parser.add_argument('--conditional_generation', type=str, default='')
