@@ -155,6 +155,8 @@ def main():
         target_length = get_pyramid_lengths(args, target_len)
         conds = [manip_data.sample(l) for l in target_length[:args.num_conditional_generator]]
         generation_mode = 'cond'
+        if not args.conditional_generator:
+            raise Exception('Conditional generation only applicable to conditional generators.')
     elif args.conditional_generator:
         "This is a conditional model, but the condition is not given. Then the condition will be sampled from the ConGen model"
         target_len = test_args.target_length
