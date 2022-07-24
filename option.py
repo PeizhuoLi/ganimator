@@ -32,7 +32,7 @@ class OptionParser:
         self.parser.add_argument('--conditional_generator', type=int, default=0)
         self.parser.add_argument('--conditional_mode', type=str, default='locrot')
         self.parser.add_argument('--full_noise', type=int, default=0)
-        self.parser.add_argument('--num_conditional_generator', type=int, default=1)
+        self.parser.add_argument('--num_conditional_generator', type=int, default=7)
         self.parser.add_argument('--keep_y_pos', type=int, default=1)
         self.parser.add_argument('--path_to_existing', type=str, default='')
         self.parser.add_argument('--num_stages_limit', type=int, default=-1)
