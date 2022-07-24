@@ -4,21 +4,6 @@ import random
 from models.transforms import repr6d2quat, euler2mat
 import torch.nn.functional as F
 from functools import partial
-from scipy.ndimage.filters import gaussian_filter
-
-
-def gaussian_filter_wrapper(x: torch.Tensor, sigma: float):
-    res = []
-    for i in range(x.shape[1]):
-        nx = x[:, [i]]
-        n_shape = nx.shape
-        nx = nx.reshape(-1)
-        nx = gaussian_filter(nx.numpy(), sigma=sigma, mode='nearest')
-        nx = torch.tensor(nx)
-        nx = nx.reshape(n_shape)
-        res.append(nx)
-    res = torch.cat(res, dim=1)
-    return res
 
 
 def get_layered_mask(layer_mode, n_rot=6):
@@ -28,15 +13,10 @@ def get_layered_mask(layer_mode, n_rot=6):
     :param n_rot: number of channels for a rotation
     :return:
     """
-    if 'xz' in layer_mode:
-        mask_loc = [-6, -4]
-    else:
-        mask_loc = [-6, -5, -4]
+    mask_loc = [-6, -5, -4]
 
     if 'locrot' in layer_mode:
         mask_layered = mask_loc + list(range(n_rot))
-    elif 'loc' in layer_mode:
-        mask_layered = mask_loc
     elif 'all' in layer_mode:
         mask_layered = slice(None)
     else:

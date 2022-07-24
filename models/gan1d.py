@@ -176,13 +176,10 @@ class GAN_model:
 
 
 class LayeredModel(nn.Module):
-    def __init__(self, args, layered: Conv1dModel, regular: Conv1dModel, n_rot=None):
+    def __init__(self, args, regular: Conv1dModel, n_rot=None):
         super(LayeredModel, self).__init__()
         self.layers = nn.ModuleList()
-        if layered is not None:
-            self.layers.append(layered)
         self.layers.append(regular)
-        self.layered = layered
         self.regular = regular
 
         self.layer_mask = get_layered_mask(args.layer_mode, n_rot)
@@ -196,8 +193,8 @@ class LayeredModel(nn.Module):
 
 
 class LayeredGenerator(LayeredModel):
-    def __init__(self, args, layered: Conv1dModel, regular: Conv1dModel, n_rot=None, default_requires_mask=False):
-        super(LayeredGenerator, self).__init__(args, layered, regular, n_rot)
+    def __init__(self, args, regular: Conv1dModel, n_rot=None, default_requires_mask=False):
+        super(LayeredGenerator, self).__init__(args, regular, n_rot)
         self.default_requires_mask = default_requires_mask
 
     def forward(self, input, prev_img, cond=None, cond_requires_mask=None):
@@ -215,10 +212,7 @@ class LayeredGenerator(LayeredModel):
             prev_img = torch.empty_like(input)
             prev_img.fill_(val)
         if cond is None:
-            if self.args.layered_full_receptive:
-                self.res_layered = self.layered(input)[:, self.layer_mask]
-            else:
-                self.res_layered = self.layered(input[:, self.layer_mask])
+            raise Exception('Condition is required for conditional generator')
         else:
             if cond_requires_mask:
                 cond = cond[:, self.layer_mask]

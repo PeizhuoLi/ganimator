@@ -5,7 +5,6 @@ import torch
 import torch.nn.functional as F
 from bvh.bvh_parser import BVH_file
 from models.transforms import interpolate_6d
-from models.utils import gaussian_filter_wrapper
 from bvh.bvh_writer import WriterWrapper
 
 
