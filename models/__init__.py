@@ -35,34 +35,16 @@ def get_group_list(args, num_stages):
 
 
 def create_layered_model(args, dataset, evaluation=False, channels_list=None):
-    if args.new_layered:
-        # In new implementation the layered model has been replaced by normal model.
-        return create_model(args, dataset, evaluation, channels_list)
-    n_channels = len(utils.get_layered_mask(args.layer_mode, dataset.n_rot))
-
-    neighbour_list = dataset.bvh_file.get_neighbor(threshold=args.neighbour_dist, enforce_lower=args.enforce_lower,
+    neighbour_list = dataset.bvh_file.get_neighbor(threshold=args.neighbour_dist,
                                                    enforce_contact=args.enforce_contact)
 
-    channels_list_layered = [n_channels, n_channels, n_channels * 2, n_channels * 2, n_channels]
     channels_list_regular = get_channels_list(args, dataset, neighbour_list) if channels_list is None else channels_list
-
-    if len(args.path_to_existing) != 0:
-        layered_gen = None
-    elif args.layered_full_receptive:
-        layered_gen = Conv1dModel(channels_list_regular, args.kernel_size, last_active=None,
-                                  padding_mode=args.padding_mode,
-                                  batch_norm=args.batch_norm,
-                                  neighbour_list=neighbour_list, skeleton_aware=args.skeleton_aware).to(args.device)
-    else:
-        layered_gen = Conv1dModel(channels_list_layered, args.kernel_size, last_active=None, padding_mode=args.padding_mode,
-                                  batch_norm=args.batch_norm,
-                                  neighbour_list=None, skeleton_aware=False).to(args.device)
 
     regular_gen = Conv1dModel(channels_list_regular, args.kernel_size, last_active=None, padding_mode=args.padding_mode,
                               batch_norm=args.batch_norm,
                               neighbour_list=neighbour_list, skeleton_aware=args.skeleton_aware).to(args.device)
 
-    layered_gen = LayeredGenerator(args, layered_gen, regular_gen, dataset.n_rot, default_requires_mask=True)
+    layered_gen = LayeredGenerator(args, regular_gen, dataset.n_rot, default_requires_mask=True)
 
     if evaluation:
         return layered_gen
