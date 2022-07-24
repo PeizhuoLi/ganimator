@@ -26,7 +26,7 @@ Or you may install the following packages (and their dependencies) manually:
 
 ## Quick Start
 
-We provide several pretrained models for various characters. Download and extract the pretrained model from [Google Drive](https://drive.google.com/file/d/1NtTjchzExdXEzWFgTiu7OEw2O8srQSM7/view?usp=sharing).
+We provide several pretrained models for various characters. Download and extract the pretrained model from [Google Drive](https://drive.google.com/file/d/1EnKE2B46sYWmRIdywNubJalzxzbvqvo-/view?usp=sharing).
 
 ### Novel motion synthesis
 
@@ -61,6 +61,21 @@ You may specify training device by `--device=cuda:0` using pytorch's device conv
 
 
 For customized bvh file, specify the joint names that should be involved during the generation and the contact name in `./bvh/skeleton_databse.py`, and set corresponding `bvh_prefix` and `bvh_name` parameter for `train.py`.
+
+
+### Training a Conditional Generator
+
+A conditional generator takes the motion of one or several given joints as constraints and generate animation complying with the constraints. Before training a conditional generator, a regular generator must be trained on the same training sequence.
+
+Here is an example for training a conditional generator for the walk-in-circle motion:
+
+~~~bash
+python train.py --bvh_prefix=./data/Joe --bvh_name=Walk-In-Circle --save_path={save_path} --skeleton_aware=1 --path_to_existing=./pre-trained/walk-in-circle --conditional_generator=1
+~~~
+
+This example assumes that a pre-trained regular generator is stored in `./pre-trained/walk-in-circle`, which is specified by the `--path_to_existing` parameter.
+
+This repository contains the code using the motion of root joint as condition. However, it is also possible to customize the conditional joints. It can be done by modify the `get_layered_mask()` function in `models/utils.py`. It takes the `--conditional_mode` parameter as its first parameter and returns the corresponding channel indices in the tensor representation.
 
 ## Applications
 
@@ -110,8 +125,17 @@ Note the content of *content* input is required to be similar to the content of 
 
 ### Conditional Generation
 
-Under development...
+When a pre-defined motion of part of the skeleton (e.g., root trajectory) is given, a conditional generation model can produce animation complying with given constraints. 
 
+This is an example for conditional generation:
+
+~~~bash
+python demo.py --save_path=./pre-trained/conditional-walk --conditional_generation=./data/Joe/traj-example.bvh
+~~~
+
+This pre-trained model takes the position and orientation of root joint from `traj-example.bvh`. If the conditional source file is not specified, the script will sample a trajectory from a pre-traiend regular generator as the condition. 
+
+For more details about specifying conditional joints, please refer to [Training a Conditional Generator](https://github.com/PeizhuoLi/ganimator#training-a-conditional-generator).
 
 ## Acknowledgements
 
