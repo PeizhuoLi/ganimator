@@ -2,7 +2,7 @@ import torch
 import os
 from os.path import join as pjoin
 from dataset.motion import MotionData, load_multiple_dataset
-from models import create_model, create_layered_model
+from models import create_model, create_conditional_model
 from models.architecture import draw_example, get_pyramid_lengths, FullGenerator
 from option import TestOptionParser, TrainOptionParser
 from fix_contact import fix_contact_on_file
@@ -42,7 +42,7 @@ def load_all_from_path(save_path, device, use_class=False):
 
     gens = []
     for step, length in enumerate(lengths[0]):
-        create = create_layered_model if args.layered_generator and step < args.num_layered_generator else create_model
+        create = create_conditional_model if args.conditional_generator and step < args.num_conditional_generator else create_model
         gen = create(args, motion_data, evaluation=True)
         try:
             gen_sate = torch.load(pjoin(args.save_path, f'gen{step:03d}.pt'), map_location=device)
@@ -103,8 +103,8 @@ def main():
 
     if len(args.path_to_existing):
         ConGen = load_all_from_path(args.path_to_existing, args.device, use_class=True)
-        ConGen.output_mask = get_layered_mask(args.layer_mode, motion_data.n_rot)
-        conds_rec = [motion_data.sample(lengths[0][i]) for i in range(args.num_layered_generator)]
+        ConGen.output_mask = get_layered_mask(args.conditional_mode, motion_data.n_rot)
+        conds_rec = [motion_data.sample(lengths[0][i]) for i in range(args.num_conditional_generator)]
     else:
         ConGen = None
         conds_rec = None
@@ -137,7 +137,7 @@ def main():
                                 no_scale=False)
         target_len = len(manip_data)
         target_length = get_pyramid_lengths(args, target_len)
-        conds = manip_data.sample(target_length[0], mode='nearest')
+        conds = manip_data.sample(target_length[0])
     elif test_args.keyframe_editing:
         manip_data = MotionData(f'{test_args.keyframe_editing}',
                                 padding=args.skeleton_aware, use_velo=args.use_velo, repr=args.repr,
@@ -153,16 +153,16 @@ def main():
                                 no_scale=True)
         target_len = len(manip_data)  # Use original length of training data
         target_length = get_pyramid_lengths(args, target_len)
-        conds = [manip_data.sample(l) for l in target_length[:args.num_layered_generator]]
+        conds = [manip_data.sample(l) for l in target_length[:args.num_conditional_generator]]
         generation_mode = 'cond'
-    elif args.layered_generator:
+    elif args.conditional_generator:
         "This is a conditional model, but the condition is not given. Then the condition will be sampled from the ConGen model"
         target_len = test_args.target_length
         target_length = get_pyramid_lengths(args, target_len)
         manip_data = None
         conds = ConGen.random_generate(target_length)
         conds_full = conds[-1]
-        conds = conds[:args.num_layered_generator]
+        conds = conds[:args.num_conditional_generator]
     else:
         target_len = test_args.target_length
         target_length = get_pyramid_lengths(args, target_len)
@@ -186,7 +186,7 @@ def main():
 
     if manip_data is not None:
         motion_data.write(pjoin(save_path, 'manipulate_input.bvh'), manip_data.sample())
-    elif args.layered_generator:
+    elif args.conditional_generator:
         motion_data.write(pjoin(save_path, 'generated_traj.bvh'), conds_full)
 
 

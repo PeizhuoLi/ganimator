@@ -210,8 +210,8 @@ def draw_example(gens, mode, z_star, lengths, amps, batch_size, args, all_img=Fa
     :return: generated image(s)
     """
     if not isinstance(conds, list): conds = [conds]
-    if args.layered_generator:
-        num_cond = args.num_layered_generator
+    if args.conditional_generator:
+        num_cond = args.num_conditional_generator
     else:
         # num_cond = 0
         pass

@@ -29,11 +29,10 @@ class OptionParser:
         self.parser.add_argument('--enforce_contact', type=int, default=1)
         self.parser.add_argument('--slerp', type=int, default=0)
         self.parser.add_argument('--nearest_interpolation', type=int, default=0)
-        self.parser.add_argument('--layered_generator', type=int, default=0)
-        self.parser.add_argument('--layered_full_receptive', type=int, default=0)
-        self.parser.add_argument('--layer_mode', type=str, default='locrot')
+        self.parser.add_argument('--conditional_generator', type=int, default=0)
+        self.parser.add_argument('--conditional_mode', type=str, default='locrot')
         self.parser.add_argument('--full_noise', type=int, default=0)
-        self.parser.add_argument('--num_layered_generator', type=int, default=1)
+        self.parser.add_argument('--num_conditional_generator', type=int, default=1)
         self.parser.add_argument('--keep_y_pos', type=int, default=1)
         self.parser.add_argument('--path_to_existing', type=str, default='')
         self.parser.add_argument('--num_stages_limit', type=int, default=-1)
@@ -48,8 +47,8 @@ class OptionParser:
     def checker(args):
         if args.slerp:
             raise Exception('Slerp is no longer supported.')
-        if args.nearest_interpolation and args.layered_generator:
-            raise Exception('LayeredGenerator with nearest interpolation not yet implemented')
+        if args.nearest_interpolation and args.conditional_generator:
+            raise Exception('Conditional with nearest interpolation not yet implemented')
         if args.multiple_sequences and len(args.path_to_existing) > 0:
             raise Exception('Does not support conditional generation for multiple sequences.')
         if not args.contact and (args.enforce_contact or args.enforce_lower):

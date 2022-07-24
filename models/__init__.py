@@ -34,7 +34,7 @@ def get_group_list(args, num_stages):
     return group_list
 
 
-def create_layered_model(args, dataset, evaluation=False, channels_list=None):
+def create_conditional_model(args, dataset, evaluation=False, channels_list=None):
     neighbour_list = dataset.bvh_file.get_neighbor(threshold=args.neighbour_dist,
                                                    enforce_contact=args.enforce_contact)
 

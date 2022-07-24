@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from models.skeleton import SkeletonConv
-from models.utils import GAN_loss, ImagePool, VeloLabelConsistencyLoss, RecLoss, DeltaLoss, get_layered_mask
+from models.utils import GAN_loss, ImagePool, VeloLabelConsistencyLoss, RecLoss, get_layered_mask
 import functools
 
 
@@ -44,7 +44,7 @@ class Conv1dModel(nn.Module):
 
     def forward(self, input, prev_img=None, cond=None, cond_requires_mask=False):
         if cond is not None:
-            layer_mask = get_layered_mask('locrot', 6)
+            layer_mask = get_conditional_mask('locrot', 6)
             if cond_requires_mask:
                 cond = cond[:, layer_mask]
             input[:, layer_mask] = cond
@@ -182,7 +182,7 @@ class LayeredModel(nn.Module):
         self.layers.append(regular)
         self.regular = regular
 
-        self.layer_mask = get_layered_mask(args.layer_mode, n_rot)
+        self.layer_mask = get_layered_mask(args.conditional_mode, n_rot)
         self.args = args
 
         self.res_layered = None
