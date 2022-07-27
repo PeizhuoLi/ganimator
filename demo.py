@@ -7,6 +7,7 @@ from models.architecture import draw_example, get_pyramid_lengths, FullGenerator
 from option import TestOptionParser, TrainOptionParser
 from fix_contact import fix_contact_on_file
 from models.utils import get_layered_mask
+from interactive_utils import sliding_window
 
 
 def load_all_from_path(save_path, device, use_class=False):
@@ -154,6 +155,7 @@ def main():
         target_len = len(manip_data)  # Use original length of training data
         target_length = get_pyramid_lengths(args, target_len)
         conds = [manip_data.sample(l) for l in target_length[:args.num_conditional_generator]]
+        conds_full = conds[-1]
         generation_mode = 'cond'
         if not args.conditional_generator:
             raise Exception('Conditional generation only applicable to conditional generators.')
@@ -181,8 +183,14 @@ def main():
     amps2 = amps[base_id].clone()
     amps2[1:] = 0
 
-    imgs = draw_example(gens, generation_mode, z_stars[base_id], target_length, amps2, 1, args, all_img=True,
-                        conds=conds, full_noise=args.full_noise, given_noise=[z_target])
+    if not test_args.interactive:
+        imgs = draw_example(gens, generation_mode, z_stars[base_id], target_length, amps2, 1, args, all_img=True,
+                            conds=conds, full_noise=args.full_noise, given_noise=[z_target])
+    else:
+        if not args.conditional_generator:
+            raise Exception('Interactive mode only applicable to conditional generators.')
+        final_res, imgs = sliding_window(gens, z_stars[base_id], amps2, conds_full, args)
+
     motion_data.write(pjoin(save_path, f'result.bvh'), imgs[-1])
     fix_contact_on_file(save_path, name=f'result')
 

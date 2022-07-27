@@ -115,3 +115,4 @@ class TestOptionParser(OptionParser):
         self.parser.add_argument('--style_transfer', type=str, default='')
         self.parser.add_argument('--keyframe_editing', type=str, default='')
         self.parser.add_argument('--conditional_generation', type=str, default='')
+        self.parser.add_argument('--interactive', type=int, default=0)

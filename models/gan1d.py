@@ -44,7 +44,7 @@ class Conv1dModel(nn.Module):
 
     def forward(self, input, prev_img=None, cond=None, cond_requires_mask=False):
         if cond is not None:
-            layer_mask = get_conditional_mask('locrot', 6)
+            layer_mask = get_layered_mask('locrot', 6)
             if cond_requires_mask:
                 cond = cond[:, layer_mask]
             input[:, layer_mask] = cond

@@ -135,6 +135,8 @@ python demo.py --save_path=./pre-trained/conditional-walk --conditional_generati
 
 This pre-trained model takes the position and orientation of root joint from `traj-example.bvh`. If the conditional source file is not specified, the script will sample a trajectory from a pre-traiend regular generator as the condition. 
 
+Additionally, `--interactive=1` option will generate the animation with interactive mode. In this mode, the condition information will be fed into the generator gradually. It is conceptually an interactive generation, but not an interactive demo that can be controlled with a keyboard or gamepad. 
+
 For more details about specifying conditional joints, please refer to [Training a Conditional Generator](https://github.com/PeizhuoLi/ganimator#training-a-conditional-generator).
 
 ## Acknowledgements

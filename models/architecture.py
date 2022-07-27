@@ -80,42 +80,6 @@ def joint_train(all_reals, gens, gan_models, all_lengths, all_z_star, all_amps, 
                 torch.save(gan_model.gen.state_dict(), name)
 
 
-def realtime_example(gens, lengths, amps, conditions, trajs, args, layered_mask, full_noise=False):
-
-    interpolater = get_interpolator(args)
-    device = args.device
-
-    imgs = []
-    prev_img = torch.zeros((1, conditions[0].shape[1], lengths[0]), device=device)
-    # prev_img[:, :conditions[0].shape[1]] = conditions[0]
-    # prev_img[:, conditions[0].shape[1]:, layered_mask] = trajs
-    for step, (gen, length, amp, cond, traj) in enumerate(zip(gens, lengths, amps, conditions, trajs)):
-        length_cond = cond.shape[-1]
-        length_traj = traj.shape[-1]
-        n_channel = cond.shape[1] if full_noise else 1
-        noise = torch.randn((1, n_channel, length), device=device) * amp
-        if n_channel == 1:
-            noise = noise.repeat(1, cond.shape[1], 1)
-        noise = noise * torch.cat([
-                            torch.zeros((1, length_cond), device=device),
-                            torch.linspace(0, 1, length_traj).unsqueeze(0)
-                        ], dim=-1)
-        full_cond = torch.cat([cond[:, layered_mask], traj], dim=-1)
-        if step < args.num_layered_generator:
-            res = gen(noise + prev_img, prev_img, cond=full_cond, cond_requires_mask=False)
-        else:
-            res = gen(noise + prev_img, prev_img)
-
-        res = res + prev_img
-        if True:
-            res[..., :length_cond] = cond[..., :length_cond]
-        imgs.append(res)
-        if step + 1 < len(lengths):
-            prev_img = interpolater(res, size=lengths[step + 1])
-
-    return imgs
-
-
 def blend_vis(a, b, s, prefix=''):
     """
     Blending the time sequence a and b starting from time s
