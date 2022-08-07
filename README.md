@@ -6,8 +6,6 @@ This repository provides a library for novel motion synthesis from a single exam
 
 <img src="https://peizhuoli.github.io/ganimator/images/video_teaser_small.gif" slign="center">
 
-The library is still under development.
-
 
 ## Prerequisites
 
