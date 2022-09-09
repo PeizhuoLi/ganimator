@@ -15,25 +15,29 @@ conda env create -f environment.yaml
 conda activate ganimator
 ~~~
 
-Or you may install the following packages (and their dependencies) manually:
+In case you encounter a `GLIBCXX-3.4.29 not found` issue, please link your existing `libstdc++.so` file to the anaconda environment by `ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6  {path to anaconda}/envs/ganimator/bin/../lib/libstdc++.so.6`.
 
-- pytorch 1.10
-- tensorboard
-- tqdm
-- scipy
+Alternatively, you may install the following packages (and their dependencies) manually:
+
+- pytorch == 1.10
+- tensorboard >= 2.6.0
+- tqdm >= 4.62.3
+- scipy >= 1.7.3
 
 ## Quick Start
 
-We provide several pretrained models for various characters. Download and extract the pretrained model from [Google Drive](https://drive.google.com/file/d/1EnKE2B46sYWmRIdywNubJalzxzbvqvo-/view?usp=sharing).
+We provide several pretrained models for various characters. Download the pretrained model from [Google Drive](https://drive.google.com/file/d/1EnKE2B46sYWmRIdywNubJalzxzbvqvo-/view?usp=sharing). Please extract the downloaded file and put the `pre-trained` directory directly under the root of the ganimator directory. 
 
 ### Novel motion synthesis
 
-Run `demo.sh`. The result for Salsa and Crab Dace will be saved in `./results/pre-trained/{name}/bvh`. The result after foot contact fix will be saved as `result_fixed.bvh`
+Run `demo.sh`. The result for Salsa and Crab Dace will be saved in `./results/pre-trained/{name}/bvh`. The result after foot contact fix will be saved as `result_fixed.bvh`. You may visualize the generated bvh files with [Blender](https://www.blender.org).
+
+Similarly, use command `python demo.py --save_path=./pre-trained/{name of pre-trained model}` will generate the result for the given pretrained model.
 
 
 ### Evaluation
 
-A separate module for evaluation is *required*. Before start with evaluation, please refer to the instruction of installation [here](https://github.com/PeizhuoLi/ganimator-eval-kernel).
+A separate module for evaluation is *required*. Before starting with evaluation, please refer to the instruction of installation [here](https://github.com/PeizhuoLi/ganimator-eval-kernel).
 
 Use the following command to evaluate a trained model:
 
@@ -41,7 +45,7 @@ Use the following command to evaluate a trained model:
 python evaluate.py --save_path={path to trained model}
 ~~~
 
-Particularly, `python evaluate.py --save_path=./pre-trained/gangnam-style` yields the quantitative result reported in Table 1 and 2 of the paper.
+Particularly, `python evaluate.py --save_path=./pre-trained/gangnam-style` yields the quantitative result of our method with full approach reported in Table 1 and 2 of the paper.
 
 ## Train from scratch
 
