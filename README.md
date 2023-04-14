@@ -17,6 +17,8 @@ conda activate ganimator
 
 In case you encounter a `GLIBCXX-3.4.29 not found` issue, please link your existing `libstdc++.so` file to the anaconda environment by `ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6  {path to anaconda}/envs/ganimator/bin/../lib/libstdc++.so.6`.
 
+There is a [known bug](https://github.com/pytorch/pytorch/pull/69904) in the version of `pytorch` used in this project. If you encountered `AttributeError: module 'distutils' has no attribute 'version'`, downgrade your `setuptools` to version `59.5.0`.
+
 Alternatively, you may install the following packages (and their dependencies) manually:
 
 - pytorch == 1.10
