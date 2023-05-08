@@ -10,7 +10,7 @@ def main():
 
 
 def get_joints(bvh_path):
-    with open('bvh_path', 'r') as f:
+    with open(bvh_path, 'r') as f:
         lines = f.readlines()
 
     joint_names = []
