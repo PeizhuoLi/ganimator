@@ -17,7 +17,7 @@ def get_joints(bvh_path):
 
     for line in lines:
         new_line = line.strip()
-        if new_line.startswith('JOINT'):
+        if new_line.startswith('JOINT') or new_line.startswith('ROOT'):
             joint_name = new_line.split(' ')[1]
             joint_names.append(joint_name)
 
