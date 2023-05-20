@@ -14,6 +14,10 @@ python transfer_endsites.py source.bvh target.bvh
 ```
 
 ## Generating a Crowd
+<p align="center">
+  <img src="visualization/crowd_simulation_result.gif" alt="Result of the crowd simulation showing 6 different characters walking."/>
+</p>
+
 First download the pre-trained weights from [here](https://drive.google.com/file/d/1AoCkh0P8-88dwpAIHgd8jJTqNKAayyce/view?usp=sharing). Extract the `zip` file and transfer the `Eight` directory to `pre-trained` directory in the root of the project. This directory contains the pre-trained weights for the `Eight` motion sequence available in the `data` directory. You can also train your own model using the instructions in the original readme.
 
 After downloading the weights, you can generate a crowd by running the `demo.sh` script.
@@ -23,7 +27,7 @@ After downloading the weights, you can generate a crowd by running the `demo.sh`
 This will generate 30 different motion sequences using the `Eight` pre-trained weights. The result is saved in `pre-trained/Eight` directory. You can visualize the generated BVH files using [Blender](https://www.blender.org).
 
 
-# GANimator: Neural Motion Synthesis from a Single Sequence
+## GANimator: Neural Motion Synthesis from a Single Sequence
 
 ![Python](https://img.shields.io/badge/Python->=3.8-Blue?logo=python)  ![Pytorch](https://img.shields.io/badge/PyTorch->=1.10.0-Red?logo=pytorch)
 
